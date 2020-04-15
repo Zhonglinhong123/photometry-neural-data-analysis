@@ -38,6 +38,8 @@ analysis_window = 2;     % Pre/post event time window (seconds) for statistical 
 
 %% Load previously analyzed individual data
 
+x = 0;  % Initialize counter variable for statistics array
+
 load (input_datafile_name)   
                                               
 % Key variables for import: 
@@ -61,10 +63,18 @@ load (input_datafile_name)
         
 %       Number of subjects used for group analysis
         nSubjects = size(Behavior_PSTH, 2);
+        
+% Report an error if stats analysis time window exceeds original analysis
+if analysis_window > originalSecPrev
+    error ('The statistical analysis window exceeds the original analysis window for individual data.');
+end
+
+if analysis_window > originalSecPost 
+    error ('The statistical analysis window exceeds the original analysis window for individual data.');
+end
+
 
 %% Statistics for behavior
-
-x = 0;  % Initialize counter variable for statistics array
 
 % Extract individual PSTH vectors from structure array
 tempCell = {Behavior_PSTH.rewLick_PSTH}';
@@ -76,6 +86,9 @@ group_behavior_UnrewLick_PSTH = cell2mat(tempCell);
 % Determine bins to analyze
 Beh_bins = analysis_window/beh_time_resolution;
 Beh_zero = (originalSecPrev/beh_time_resolution)+1;
+if Beh_bins == Beh_zero
+    Beh_bins = Beh_bins-1;
+end
 Beh_totalBins = 1:size(group_behavior_rewLick_PSTH, 2);
 Beh_preBins = Beh_totalBins(1, (Beh_zero-Beh_bins):1:(Beh_zero-1));
 Beh_postBins = Beh_totalBins(1, Beh_zero:1:(Beh_zero+Beh_bins-1));
@@ -163,6 +176,9 @@ samplingRate = Photometry_PSTH.photometry_samplingrate;
 interval = 1/samplingRate;
 bins = round(analysis_window/interval);
 zero = round(originalSecPrev/interval);
+if bins == zero
+    bins = bins-1;
+end
 totalBins = 1:size(group_photometry_RewardLick_PSTH, 2);
 preBins = totalBins(1, (zero-bins):1:(zero-1));
 postBins = totalBins(1, zero:1:(zero+bins-1));
@@ -254,6 +270,9 @@ samplingRate = Photometry_PSTH.photometry_samplingrate;
 interval = 1/samplingRate;
 bins = round(analysis_window/interval);
 zero = round(originalSecPrev/interval);
+if bins == zero
+    bins = bins-1;
+end
 totalBins = 1:size(group_photometry_early_RewLick_PSTH, 2);
 preBins = totalBins(1, (zero-bins):1:(zero-1));
 postBins = totalBins(1, zero:1:(zero+bins-1));
