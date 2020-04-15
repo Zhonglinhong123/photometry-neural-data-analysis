@@ -5,6 +5,7 @@
 
 % ** What you need to customize:
 %       Import/export data filenames
+%       Axis limits for figures
 
 % ** Assumptions:
 %   Raw data have been previously extracted from TDT data files and photometry signal has been fitted and z-score normalized using TDT_photometry_data_extraction_script
@@ -77,7 +78,7 @@ load (input_datafile_name)
         originalSecPost = sec_postEvent; 
         
 %       Number of subjects used for group analysis
-nSubjects = size(Behavior_PSTH, 2);
+        nSubjects = size(Behavior_PSTH, 2);
 
 % Report an error if x-axis limits exceed time window for original analysis
 if xmin1 > originalSecPrev | xmin2> originalSecPrev | xmin3> originalSecPrev | xmin4 > originalSecPrev
@@ -115,6 +116,9 @@ lickTotalSec = xmin1+xmax1;
 beh_timeAxis = (-1 * xmin1) : beh_time_resolution : xmax1;
 nBehtimeAxis = size (beh_timeAxis, 2);
 axis_start = ((originalSecPrev - xmin1)/beh_time_resolution)+1;
+if axis_start == 0
+    axis_start = 1;
+end
 axis_end = axis_start + nBehtimeAxis - 1;
 
 Err1Pos = GroupPSTH_Rew_beh + Group_err_Rew_beh;
@@ -196,6 +200,9 @@ increment = (xmin2 + xmax2) / totalTs;
 timeAxis = (-1 * xmin2) : increment : xmax2;
 ntimeAxis = size (timeAxis, 2);
 axis_start = round ((originalSecPrev-xmin2)* samplingRate);
+if axis_start == 0
+    axis_start = 1;
+end
 axis_end = axis_start + ntimeAxis - 1;
 
 Err1Pos = GroupPSTH_Rew + Group_err_Rew;
@@ -275,6 +282,9 @@ increment = (xmin3 + xmax3) / totalTs;
 timeAxis = (-1 * xmin3) : increment : xmax3;
 ntimeAxis = size (timeAxis, 2);
 axis_start = round ((originalSecPrev-xmin3)* samplingRate);
+if axis_start == 0
+    axis_start = 1;
+end
 axis_end = axis_start + ntimeAxis - 1;
 
 Err1Pos = GroupPSTH_RE + Group_err_RE;
@@ -335,7 +345,6 @@ group_photometry_late_UnrewLick_PSTH = cell2mat(tempCell);
 
 samplingRate = Photometry_PSTH.photometry_samplingrate;
 
-
 % make PSTH for early unrewarded licks
 Group_err_UE = (nanstd(group_photometry_early_UnrewLick_PSTH))/sqrt(size(group_photometry_early_UnrewLick_PSTH, 1));
 GroupPSTH_UE = nanmean(group_photometry_early_UnrewLick_PSTH);
@@ -357,6 +366,9 @@ increment = (xmin4 + xmax4) / totalTs;
 timeAxis = (-1 * xmin4) : increment : xmax4;
 ntimeAxis = size (timeAxis, 2);
 axis_start = round ((originalSecPrev-xmin4)* samplingRate);
+if axis_start == 0
+    axis_start = 1;
+end
 axis_end = axis_start + ntimeAxis - 1;
 
 Err1Pos = GroupPSTH_UE + Group_err_UE;
